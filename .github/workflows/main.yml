@@ -20,8 +20,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-#       - name: Execute Gradle test
-#         run: ./gradlew test
+#      - name: Execute Gradle test
+#        run: ./gradlew test
 
       - name: Execute Gradle build
         run: ./gradlew shadowJar
@@ -31,23 +31,28 @@ jobs:
         with:
           name: artifact
           path: build/libs/esop-0.1-all.jar
-      - name: Download JAR
-        uses: actions/download-artifact@v2
-        with:
-          name: artifact
-      
+
 
   continuous-deployment:
     runs-on: ubuntu-latest
     needs: [continuous-integration]
     if: github.ref == 'refs/heads/deploy-trading'
     steps:
-      
+      - name: Download JAR
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact
+
+      - name: copy jar file
+        run: |
+          scp -i ${{ secrets.EC2_SSH_KEY }} artifact ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}
+
       - name: deploy to server
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: whoami
+
+
 
