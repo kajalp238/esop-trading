@@ -25,7 +25,7 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew shadowJar
 
-      
+
 
   continuous-deployment:
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: artifact
-          path: target/esop-trading-0.1-all.jar
+          path: build/libs/esop-trading-0.1-all.jar
       - name: Download JAR
         uses: actions/download-artifact@v2
         with:
