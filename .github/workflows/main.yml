@@ -49,7 +49,7 @@ jobs:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/esop-0.1-all.jar"
+          source: "./*"
           target: "/"
     
       - name: deploy to server
