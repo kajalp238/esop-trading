@@ -6,9 +6,9 @@ on:
 jobs:
   continuous-integration:
     runs-on: ubuntu-latest
-    permissions: 
-      contents: read
-      packages: write
+#    permissions:
+#      contents: read
+#      packages: write
     steps:
       # Step 1
       - uses: actions/checkout@v2
@@ -53,5 +53,6 @@ jobs:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: whoami
+          script: |
+            echo "Hello world"
 
