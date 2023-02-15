@@ -43,21 +43,23 @@ jobs:
         with:
           name: artifact
 
-      - name: copy jar file
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST_DNS }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./*"
-          target: "/"
-    
+#      - name: copy jar file
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.HOST_DNS }}
+#          username: ${{ secrets.USERNAME }}
+#          key: ${{ secrets.EC2_SSH_KEY }}
+#          source: "./*"
+#          target: "/"
+
       - name: deploy to server
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Hello"
 
 
 
