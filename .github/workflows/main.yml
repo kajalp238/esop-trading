@@ -22,12 +22,15 @@ jobs:
       - name: Execute Gradle test
         run: ./gradlew test
 
-    
+
   continuous-deployment:
     runs-on: ubuntu-latest
     needs: [continuous-integration]
     if: github.ref == 'refs/heads/deploy-trading'
     steps:
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Execute Gradle build
         run: ./gradlew shadowJar
       - name: Upload JAR
