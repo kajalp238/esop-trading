@@ -6,9 +6,7 @@ on:
 jobs:
   continuous-integration:
     runs-on: ubuntu-latest
-#    permissions:
-#      contents: read
-#      packages: write
+    
     steps:
       # Step 1
       - uses: actions/checkout@v2
@@ -22,12 +20,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-#      - name: Execute Gradle test
-#        run: ./gradlew test
+      - name: Execute Gradle test
+        run: ./gradlew test
 
       - name: Execute Gradle build
         run: ./gradlew shadowJar
 
+      
+
+  continuous-deployment:
+    runs-on: ubuntu-latest
+    needs: [continuous-integration]
+    if: github.ref == 'refs/heads/deploy-trading'
+    steps:
       - name: Upload JAR
         uses: actions/upload-artifact@v2
         with:
@@ -37,22 +42,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: artifact
-
-  continuous-deployment:
-    runs-on: ubuntu-latest
-    needs: [continuous-integration]
-    if: github.ref == 'refs/heads/deploy-trading'
-    permissions:
-      contents: read
-      packages: write
-    steps:
-
       - name: deploy to server
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            echo "Hello world"
+          script: whoami
 
