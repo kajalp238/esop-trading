@@ -44,9 +44,15 @@ jobs:
           name: artifact
 
       - name: copy jar file
-        run: |
-          scp -i ${{ secrets.EC2_SSH_KEY }} artifact ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}
-
+        
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: artifact
+          target: "test"
+    
       - name: deploy to server
         uses: appleboy/ssh-action@v0.1.7
         with:
