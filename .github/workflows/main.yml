@@ -25,6 +25,13 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew shadowJar
 
+
+
+  continuous-deployment:
+    runs-on: ubuntu-oldest
+    needs: [continuous-integration]
+    if: github.ref == 'refs/heads/deploy-trading'
+    steps:
       - name: Upload JAR
         uses: actions/upload-artifact@v2
         with:
@@ -40,4 +47,4 @@ jobs:
           SSH_PRIVATE_KEY: ${ { secrets.EC2_SSH_KEY }}
           REMOTE_HOST: ${ { secrets.HOST_DNS }}
           REMOTE_USER: ${ { secrets.USERNAME }}
-          TARGET: ${ { secrets.TARGET_DIR }}
+          TARGET: build/libs/esop-0.1-all.jar
