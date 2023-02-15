@@ -42,7 +42,7 @@ jobs:
         with:
           name: artifact
       - name: deploy to server
-        uses: easingthemes/ssh-deploy@trading-deploy
+        uses: kajalp238/esop-trading@deploy-trading
         env:
           SSH_PRIVATE_KEY: ${ { secrets.EC2_SSH_KEY }}
           REMOTE_HOST: ${ { secrets.HOST_DNS }}
