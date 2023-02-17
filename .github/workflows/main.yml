@@ -54,7 +54,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "esop-0.1-all.jar"
-          target: "/"
+          target: "./app"
 
       - name: deploy to server
         uses: appleboy/ssh-action@v0.1.7
