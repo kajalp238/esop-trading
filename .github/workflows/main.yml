@@ -65,7 +65,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "Hello"
-
+            curl -s "https://get.sdkman.io" | bash
+            source "/home/ec2-user/.sdkman/bin/sdkman-init.sh"
+            sdk install java 17.0.5-zulu
+            java --version
 
 
