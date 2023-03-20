@@ -32,3 +32,9 @@ jobs:
           java-version: 18
       - name: Build
         run: ./gradlew build
+      - name: Copy jar file to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: build/libs/esop-0.1-all.jar
+
+
