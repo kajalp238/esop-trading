@@ -35,7 +35,7 @@ jobs:
       - name: Copy jar file to artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: esop-trading
-          path: build/libs/
+          name: esop-trading-1.0
+          path: build/libs/esop-0.1-all.jar
 
 
