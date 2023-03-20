@@ -59,6 +59,8 @@ jobs:
             eval `ssh-agent`
             echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
             scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
+            kill -9 $(lsof -t -i:80) 
+            kill -9 $(lsof -t -i:8080) 
             ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sudo java -jar esop-0.1-all.jar"
 
 
