@@ -1,6 +1,9 @@
 micronaut:
   application:
     name: esop
+    server:
+      cors:
+        enabled: true
 netty:
   default:
     allocator:
