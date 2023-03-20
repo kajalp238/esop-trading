@@ -4,6 +4,7 @@ micronaut:
     server:
       cors:
         enabled: true
+      port: 80
 netty:
   default:
     allocator:
