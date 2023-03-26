@@ -35,10 +35,10 @@ jobs:
 
     - name: Terraform Output
       run: |
-        echo TEST=$(terraform output -raw private_key) >> $GITHUB_ENV
-        echo TEST1=$(terraform output instance_public_ip)
-        echo TEST2=$(terraform output instance_id)
-        echo TEST3=$(terraform output instance_dns)
+        echo key=$(terraform output -raw private_key) >> $GITHUB_ENV
+        echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_ENV
+        echo {{env.key}}
+
 
   build:
     name: "build the application"
