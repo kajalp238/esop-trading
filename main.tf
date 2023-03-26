@@ -41,6 +41,22 @@ resource "aws_subnet" "kajal-subnet" {
   }
 }
 
+resource "aws_s3_bucket" "kajal-gurukul-bucket" {
+  bucket = "kajal-gurukul-bucket"
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
 
 resource "aws_instance" "kajal-gurukul" {
   ami                         = "ami-00c39f71452c08778"
