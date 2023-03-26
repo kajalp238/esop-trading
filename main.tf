@@ -23,6 +23,12 @@ resource "aws_key_pair" "generated_key" {
 }
 
 
+resource "local_file" "ssh_key" {
+  filename = "${aws_key_pair.generated_key.key_name}.pem"
+  content = tls_private_key.private-key.private_key_pem
+}
+
+
 data "aws_vpc" "kajal-vpc" {
   id = "vpc-019c09a1a0c5b4f6b"
 }
