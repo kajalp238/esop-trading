@@ -56,9 +56,11 @@ jobs:
         with:
           name: esop-trading-1.0
       - name: Run application
+        run: |
+          scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
         with:
           script: |
-            scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
+            
             pid=$(sudo lsof -n -i :80 -sTCP:LISTEN -t)
             if [ -n "$pid" ]; then
               sudo kill "$pid"
