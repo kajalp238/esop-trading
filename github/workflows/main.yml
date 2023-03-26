@@ -2,12 +2,15 @@ name: Terraform CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - tf-deploy
+    branches: [ "tf-deploy" ]
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v2
