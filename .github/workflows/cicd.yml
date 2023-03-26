@@ -59,8 +59,3 @@ jobs:
           SSH_HOST: ${{ secrets.KAJAL_SSH_HOST }}
         run: |
           scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
-      - name: Kill Process at Port 80
-        run: sudo lsof -ti :80 | xargs kill -9 > /dev/null 2>&1 || true
-      - name: Start Application
-        run: |
-          nohup java -jar esop-0.1-all.jar > /dev/null 2>&1 &
