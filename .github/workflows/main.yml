@@ -27,6 +27,11 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_wrapper: false
+
     - name: Terraform Plan
       run: terraform plan
 
@@ -35,11 +40,9 @@ jobs:
 
     - name: Terraform Output
       run: |
-        echo key=$(terraform output -raw private_key) >> $GITHUB_ENV
+        echo key=$(terraform output -raw private_key) >> $GITHUB_OUTPUT
         echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
         echo ${{env.key}}
-        echo ${{env.public_ip}}
-
 
   build:
     name: "build the application"
@@ -53,7 +56,8 @@ jobs:
           distribution: corretto
           java-version: 17
       - name: Build
-        run: ./gradlew build
+        run: 
+          ./gradlew build
       - name: Copy jar file to artifacts
         uses: actions/upload-artifact@v3
         with:
