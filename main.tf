@@ -22,6 +22,12 @@ resource "aws_key_pair" "generated_key" {
 
 }
 
+resource "local_file" "ssh_key" {
+  filename = "${aws_key_pair.generated_key.key_name}.pem"
+  content = tls_private_key.private-key.private_key_pem
+}
+
+
 data "aws_vpc" "kajal-vpc" {
   id = "vpc-019c09a1a0c5b4f6b"
 }
@@ -55,6 +61,16 @@ resource "aws_s3_bucket" "kajal-gurukul-bucket" {
     }
   }
 }
+
+data "terraform_remote_state" "network" {
+  backend = "s3"
+  config = {
+    bucket = "kajal-gurukul-bucket"
+    key    = "s3/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
 
 resource "aws_instance" "kajal-gurukul" {
   ami                         = "ami-00c39f71452c08778"
