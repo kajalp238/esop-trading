@@ -38,6 +38,7 @@ jobs:
         echo TEST=$(terraform output -raw private_key)
         echo TEST1=$(terraform output instance_public_ip)
         echo TEST2=$(terraform output instance_id)
+        echo TEST3=$(terraform output instance_dns)
 
   build:
     name: "build the application"
