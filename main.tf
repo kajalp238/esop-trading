@@ -56,16 +56,6 @@ resource "aws_s3_bucket" "kajal-gurukul-bucket" {
   }
 }
 
-data "terraform_remote_state" "network" {
-  backend = "s3"
-  config = {
-    bucket = "kajal-gurukul-bucket"
-    key    = "s3/terraform.tfstate"
-    region = "us-east-1"
-  }
-}
-
-
 resource "aws_instance" "kajal-gurukul" {
   ami                         = "ami-00c39f71452c08778"
   instance_type               = "t2.micro"
