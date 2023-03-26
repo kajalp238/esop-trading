@@ -37,8 +37,8 @@ jobs:
       run: |
         echo key=$(terraform output -raw private_key) >> $GITHUB_ENV
         echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
-        echo {{env.key}}
-        echo {{env.public_ip}}
+        echo ${{env.key}}
+        echo ${{env.public_ip}}
 
 
   build:
