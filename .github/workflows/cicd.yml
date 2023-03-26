@@ -58,4 +58,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.KAJAL_EC2_SSH_KEY }}
           SSH_HOST: ${{ secrets.KAJAL_SSH_HOST }}
         run: |
-          scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
+            eval `ssh-agent`
+            echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+            scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
+            ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sudo java -jar esop-0.1-all.jar"
