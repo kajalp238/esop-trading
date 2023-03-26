@@ -22,10 +22,10 @@ resource "aws_key_pair" "generated_key" {
 
 }
 
-resource "local_file" "ssh_key" {
-  filename = "${aws_key_pair.generated_key.key_name}.pem"
-  content = tls_private_key.private-key.private_key_pem
-}
+# resource "local_file" "ssh_key" {
+#   filename = "${aws_key_pair.generated_key.key_name}.pem"
+#   content = tls_private_key.private-key.private_key_pem
+# }
 
 
 data "aws_vpc" "kajal-vpc" {
@@ -46,30 +46,30 @@ resource "aws_subnet" "kajal-subnet" {
 # }
 
 
-resource "aws_s3_bucket" "kajal-gurukul-bucket" {
-  bucket = "kajal-gurukul-bucket"
+# resource "aws_s3_bucket" "kajal-gurukul-bucket" {
+#   bucket = "kajal-gurukul-bucket"
 
-  versioning {
-    enabled = true
-  }
+#   versioning {
+#     enabled = true
+#   }
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-}
+#   server_side_encryption_configuration {
+#     rule {
+#       apply_server_side_encryption_by_default {
+#         sse_algorithm = "AES256"
+#       }
+#     }
+#   }
+# }
 
-data "terraform_remote_state" "network" {
-  backend = "s3"
-  config = {
-    bucket = "kajal-gurukul-bucket"
-    key    = "s3/terraform.tfstate"
-    region = "us-east-1"
-  }
-}
+# data "terraform_remote_state" "network" {
+#   backend = "s3"
+#   config = {
+#     bucket = "kajal-gurukul-bucket"
+#     key    = "s3/terraform.tfstate"
+#     region = "us-east-1"
+#   }
+# }
 
 
 resource "aws_instance" "kajal-gurukul" {
