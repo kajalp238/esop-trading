@@ -96,7 +96,6 @@ jobs:
         with:
           name: esop-trading-1.0
 
-      
       - name: Copy jar file to ec2 instance
         env:
           SSH_PRIVATE_KEY: ${{secrets.KAJAL_EC2_SSH_KEY}}
@@ -109,7 +108,7 @@ jobs:
             scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sdk install java 17.0.6-amzn"
-            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "nohup java -jar esop-0.1-all.jar > /dev/null"
+            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "nohup java -jar esop-0.1-all.jar > /dev/null &"
             
 
       
