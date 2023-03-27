@@ -10,7 +10,8 @@ permissions:
 jobs:
   terraform:
     name: "terraform-job"
-
+    outputs:
+      host: ${{ steps.terraform_output.outputs.public_ip }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -38,6 +39,11 @@ jobs:
 
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
+
+    - name: Terraform Output
+      id: terraform_output
+      run: |
+        echo public_ip=$(terraform output instance_public_ip | tr -d '"') >> $GITHUB_OUTPUT
 
 
   build:
@@ -95,11 +101,15 @@ jobs:
       - name: Copy jar file to ec2 instance
         env:
           SSH_PRIVATE_KEY: ${{secrets.KAJAL_EC2_SSH_KEY}}
-          SSH_HOST: ${{ secrets.KAJAL_SSH_HOST }}
+          SSH_HOST: ${{ needs.terraform.outputs.host }}
         run: |
 
             eval `ssh-agent`
             echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
             scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
+            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
+            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "source '$HOME/.sdkman/bin/sdkman-init.sh'"
+            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "echo sdk version"
+
       
