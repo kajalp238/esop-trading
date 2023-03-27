@@ -44,7 +44,7 @@ jobs:
     - name: Terraform Output
       id: terraform_output
       run: |
-        echo key=$(terraform output -raw private_key) >> $GITHUB_OUTPUT
+        echo key=$(terraform output -raw private_key) | tr -d '\r' >> $GITHUB_OUTPUT
         echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
 
   build:
@@ -86,6 +86,7 @@ jobs:
     needs: 
       - terraform
       - build
+      - test
     steps:
       - name: Setup java
         uses: actions/setup-java@v3
@@ -113,5 +114,4 @@ jobs:
           username: "ec2-user"
           key: ${{needs.terraform.outputs.key}}
           script: |
-            cd app
-            ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
+            ssh -o StrictHostKeyChecking=no ec2-user@$host -t "java -jar app/esop-0.1-all.jar"
