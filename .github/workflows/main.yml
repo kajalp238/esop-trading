@@ -94,9 +94,8 @@ jobs:
             echo "gurukul1"
             chmod 400 gurukul-key.pem
             echo "gurukul2"
-            cat gurukul-key.pem
-            ssh -i gurukul-key.pem -o StrictHostKeyChecking=no ec2-user@$SSH_HOST
+            ssh -tt -i gurukul-key.pem -o StrictHostKeyChecking=no ec2-user@$SSH_HOST
             echo "before copy"
-            scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST
-            ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
+            scp -i gurukul-key.pem -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST
+            ssh -i gurukul-key.pem -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
       
