@@ -70,6 +70,7 @@ resource "aws_security_group" "kajal-gurukul-sg" {
       to_port          = 0
     }
   ]
+
   ingress = [
     {
       cidr_blocks      = ["0.0.0.0/0", ]
