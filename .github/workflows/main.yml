@@ -4,9 +4,6 @@ on:
   push:
     branches: [ "terraform-deployment" ]
 
-permissions:
-  contents: read
-
 jobs:
   terraform:
     name: "terraform-job"
@@ -65,6 +62,7 @@ jobs:
         with:
           name: esop-trading-1.0
           path: build/libs/esop-0.1-all.jar
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -101,7 +99,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{secrets.KAJAL_EC2_SSH_KEY}}
           SSH_HOST: ${{ needs.terraform.outputs.host }}
         run: |
-
             eval `ssh-agent`
             echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "fuser -k 8080/tcp"          
@@ -109,6 +106,3 @@ jobs:
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sdk install java 17.0.6-amzn"
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar > /dev/null"
-            
-
-      
