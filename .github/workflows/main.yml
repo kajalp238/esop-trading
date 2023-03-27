@@ -86,7 +86,7 @@ jobs:
       - name: Copy jar file to ec2 instance
         env:
           SSH_PRIVATE_KEY: ${{needs.terraform.outputs.key}}
-          SSH_HOST: ${{ needs.terraform.outputs.private_ip }}
+          SSH_HOST: ${{ needs.terraform.outputs.host }}
         run: |
             eval `ssh-agent`
             echo "gurukul"
