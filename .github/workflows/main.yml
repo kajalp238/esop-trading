@@ -89,8 +89,11 @@ jobs:
           SSH_HOST: ${{ needs.terraform.outputs.private_ip }}
         run: |
             eval `ssh-agent`
+            echo "gurukul"
             echo "$SSH_PRIVATE_KEY" | tr -d '\r' > gurukul-key.pem
+            echo "gurukul1"
             chmod 400 gurukul-key.pem
+            echo "gurukul2"
             ssh -i -tt gurukul-key.pem -o StrictHostKeyChecking=no ec2-user@$SSH_HOST
             echo "before copy"
             scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST
