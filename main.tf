@@ -70,6 +70,7 @@ resource "aws_security_group" "kajal-gurukul-sg" {
       to_port          = 0
     }
   ]
+
   ingress = [
     {
       cidr_blocks      = ["0.0.0.0/0", ]
@@ -81,6 +82,17 @@ resource "aws_security_group" "kajal-gurukul-sg" {
       security_groups  = []
       self             = false
       to_port          = 22
+    },
+    {
+      cidr_blocks      = ["0.0.0.0/0", ]
+      description      = ""
+      from_port        = 8080
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "tcp"
+      security_groups  = []
+      self             = false
+      to_port          = 8080
     }
   ]
 }
