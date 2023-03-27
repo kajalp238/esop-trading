@@ -44,7 +44,7 @@ jobs:
     - name: Terraform Output
       id: terraform_output
       run: |
-        echo key=$(terraform output -raw private_key) | tr -d '\r' >> $GITHUB_OUTPUT
+        echo key=$(terraform output -raw private_key) >> $GITHUB_OUTPUT
         echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
 
   build:
@@ -103,7 +103,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.host }}
           username: "ec2-user"
-          key: ${{needs.terraform.outputs.key}}
+          key: ${{secrets.KAJAL_EC2_SSH_KEY}}
           source: "esop-0.1-all.jar"
           target: "./app"
 
@@ -112,6 +112,6 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.host }}
           username: "ec2-user"
-          key: ${{needs.terraform.outputs.key}}
+          key: ${{secrets.KAJAL_EC2_SSH_KEY}}
           script: |
             ssh -o StrictHostKeyChecking=no ec2-user@$host -t "java -jar app/esop-0.1-all.jar"
