@@ -44,9 +44,8 @@ jobs:
     - name: Terraform Output
       id: terraform_output
       run: |
-        echo key=$(terraform output -raw private_key) >> $GITHUB_OUTPUT
-        echo "::set-output public_ip=$(terraform output instance_public_ip)"
-        # echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
+        echo key=$(terraform output -raw private_key | tr -d '\n' | sed 's/ /\\n/g') >> $GITHUB_OUTPUT
+        echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
 
   build:
     name: "build the application"
@@ -102,17 +101,19 @@ jobs:
       - name: copy jar file
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.KAJAL_SSH_HOST }}
+          host: ${{ needs.terraform.outputs.host }}
           username: "ec2-user"
-          key: ${{secrets.KAJAL_EC2_SSH_KEY}}
+          key: ${{ needs.terraform.outputs.key }}
           source: "esop-0.1-all.jar"
           target: "./app"
 
       - name: deploy to server
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.KAJAL_SSH_HOST }}
+          host: ${{ needs.terraform.outputs.host }}
           username: "ec2-user"
-          key: ${{secrets.KAJAL_EC2_SSH_KEY}}
+          key: ${{ needs.terraform.outputs.key }}
           script: |
             echo "ssh"
+            cd app
+            java -jar esop-0.1-all.jar
