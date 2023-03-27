@@ -10,9 +10,7 @@ permissions:
 jobs:
   terraform:
     name: "terraform-job"
-    outputs:
-      key: ${{ steps.terraform_output.outputs.key }}
-      host: ${{ steps.terraform_output.outputs.public_ip }}
+
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -41,11 +39,6 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
 
-    - name: Terraform Output
-      id: terraform_output
-      run: |
-        echo key=$(terraform output -raw private_key | tr -d '\n' | sed 's/ /\\n/g') >> $GITHUB_OUTPUT
-        echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
 
   build:
     name: "build the application"
@@ -98,22 +91,15 @@ jobs:
         with:
           name: esop-trading-1.0
 
-      - name: copy jar file
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ needs.terraform.outputs.host }}
-          username: "ec2-user"
-          key: ${{ needs.terraform.outputs.key }}
-          source: "esop-0.1-all.jar"
-          target: "./app"
+      
+      - name: Copy jar file to ec2 instance
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.KAJAL_EC2_SSH_KEY}}
+          SSH_HOST: ${{ secrets.KAJAL_SSH_HOST }}
+        run: |
 
-      - name: deploy to server
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ needs.terraform.outputs.host }}
-          username: "ec2-user"
-          key: ${{ needs.terraform.outputs.key }}
-          script: |
-            echo "ssh"
-            cd app
-            java -jar esop-0.1-all.jar
+            eval `ssh-agent`
+            echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+            scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
+            ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
+      
