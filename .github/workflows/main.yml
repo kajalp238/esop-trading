@@ -45,7 +45,8 @@ jobs:
       id: terraform_output
       run: |
         echo key=$(terraform output -raw private_key) >> $GITHUB_OUTPUT
-        echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
+        echo "::set-output public_ip=$(terraform output instance_public_ip)"
+        # echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
 
   build:
     name: "build the application"
