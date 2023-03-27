@@ -109,7 +109,7 @@ jobs:
             scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
             ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sdk install java 17.0.6-amzn"
-            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "MICRONAUT_SERVER_PORT=80 nohup java -jar esop-0.1-all.jar > /dev/null"
+            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
             
 
       
