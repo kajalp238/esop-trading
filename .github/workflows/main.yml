@@ -65,7 +65,6 @@ jobs:
         with:
           name: esop-trading-1.0
           path: build/libs/esop-0.1-all.jar
-
   test:
     runs-on: ubuntu-latest
     steps:
