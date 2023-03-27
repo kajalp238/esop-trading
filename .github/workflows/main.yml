@@ -46,7 +46,6 @@ jobs:
       run: |
         echo key=$(terraform output -raw private_key) >> $GITHUB_OUTPUT
         echo public_ip=$(terraform output instance_public_ip) >> $GITHUB_OUTPUT
-        echo ${{env.key}}
 
   build:
     name: "build the application"
@@ -89,9 +88,11 @@ jobs:
           SSH_PRIVATE_KEY: ${{needs.terraform.outputs.key}}
           SSH_HOST: ${{ needs.terraform.outputs.private_ip }}
         run: |
-            echo SSH_PRIVATE_KEY
             eval `ssh-agent`
-            echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+            echo "$SSH_PRIVATE_KEY" | tr -d '\r' > gurukul-key.pem
+            chmod 400 gurukul-key.pem
+            ssh -i gurukul-key.pem -o StrictHostKeyChecking=no ec2-user@$SSH_HOST:~
+            echo "before copy"
             scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
             ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
       
