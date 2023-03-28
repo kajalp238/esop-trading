@@ -111,10 +111,8 @@ jobs:
             fuser -k 8080/tcp
             fi
             echo "kill pro"
-            curl -s 'https://get.sdkman.io' | bash
+            yum install java-17-openjdk
             echo "sdk"
-            sdk install java 17.0.6-amzn
-            echo "java"
             java -jar esop-0.1-all.jar > /dev/null
           
           '
