@@ -1,0 +1,12 @@
+name: order-history
+
+on:
+  push:
+    branches: [ "order-history-refactor" ]
+
+jobs:
+  terraform:
+    name: "order-checkout"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
