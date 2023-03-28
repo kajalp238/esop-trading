@@ -103,8 +103,11 @@ jobs:
           echo "priv key"
           pid = $(fuser 8080/tcp)
           echo $pid
-          if($pid)
-            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "fuser -k 8080/tcp"  
+          if [$pid]
+          then
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "fuser -k 8080/tcp"
+          exit
+          fi
           echo "kill pro"
           scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
           echo "scp"
