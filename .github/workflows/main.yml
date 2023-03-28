@@ -100,20 +100,21 @@ jobs:
         run: |
           eval `ssh-agent`
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-          echo "priv key"
-          pid=$(fuser 8080/tcp)
-          echo $pid
-          if [ $pid ]
-          then
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "fuser -k 8080/tcp"
-          fi
-          exit
-          
-          echo "kill pro"
           scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
-          echo "scp"
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
-          echo "sdk"
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sdk install java 17.0.6-amzn"
-          echo "java"
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar > /dev/null"
+          echo "priv key"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t '
+            pid=$(fuser 8080/tcp)
+            echo $pid
+            if [ $pid ]
+            then
+            echo "kill"
+            fuser -k 8080/tcp
+            fi
+            echo "kill pro"
+            curl -s 'https://get.sdkman.io' | bash
+            echo "sdk"
+            sdk install java 17.0.6-amzn
+            echo "java"
+            java -jar esop-0.1-all.jar > /dev/null
+          
+          '
