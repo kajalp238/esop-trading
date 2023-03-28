@@ -101,8 +101,10 @@ jobs:
           eval `ssh-agent`
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           echo "priv key"
-          value=$(lsof -n -i :8080 | grep LISTEN | awk -F ' ' '{print $2}') && sudo kill -9 $value > /dev/null
-          #            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "lsof -i tcp:8080 | awk '/8080/{print $2}' | xargs kill"
+          pid = $(fuser 8080/tcp)
+          echo $pid
+          if($pid)
+            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "fuser -k 8080/tcp"  
           echo "kill pro"
           scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
           echo "scp"
