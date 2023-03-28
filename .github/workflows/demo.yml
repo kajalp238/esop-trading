@@ -2,7 +2,8 @@ name: Demo
 
 on:
   push:
-    branches: [ "order-service-refactoring" ]
+    branches: 
+      - order-service-refactoring
 
 jobs:
   terraform:
