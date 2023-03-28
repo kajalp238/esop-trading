@@ -104,19 +104,12 @@ jobs:
           echo "priv key"
           ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t '
             pid=$(fuser 8080/tcp)
-            echo $pid
             if [ $pid ]
             then
-            echo "kill"
             fuser -k 8080/tcp
             fi
-            echo "kill pro"
             curl -s 'https://get.sdkman.io' | bash
-            echo "sdk"
             source "/.sdkman/bin/sdkman-init.sh"
-            echo "source"
             sdk install java 17.0.6-amzn
-            echo "java"
             java -jar esop-0.1-all.jar > /dev/null
-          
           '
