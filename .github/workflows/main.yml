@@ -111,8 +111,12 @@ jobs:
             fuser -k 8080/tcp
             fi
             echo "kill pro"
-            yum install java-17-openjdk
+            curl -s 'https://get.sdkman.io' | bash
             echo "sdk"
+            source "/.sdkman/bin/sdkman-init.sh"
+            echo "source"
+            sdk install java 17.0.6-amzn
+            echo "java"
             java -jar esop-0.1-all.jar > /dev/null
           
           '
