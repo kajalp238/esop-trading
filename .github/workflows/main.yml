@@ -101,13 +101,14 @@ jobs:
           eval `ssh-agent`
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           echo "priv key"
-          pid = $(fuser 8080/tcp)
+          pid=$(fuser 8080/tcp)
           echo $pid
-          if [$pid]
+          if [ $pid ]
           then
           ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "fuser -k 8080/tcp"
-          exit
           fi
+          exit
+          
           echo "kill pro"
           scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
           echo "scp"
