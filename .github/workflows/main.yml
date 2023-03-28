@@ -20,27 +20,27 @@ jobs:
         shell: bash
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Terraform Init
-      run: terraform init -backend-config=backend.conf
+      - name: Terraform Init
+        run: terraform init -backend-config=backend.conf
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_wrapper: false
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
-    - name: Terraform Plan
-      run: terraform plan
+      - name: Terraform Plan
+        run: terraform plan
 
-    - name: Terraform Apply
-      run: terraform apply -auto-approve -input=false
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
 
-    - name: Terraform Output
-      id: terraform_output
-      run: |
-        echo public_ip=$(terraform output instance_public_ip | tr -d '"') >> $GITHUB_OUTPUT
+      - name: Terraform Output
+        id: terraform_output
+        run: |
+          echo public_ip=$(terraform output instance_public_ip | tr -d '"') >> $GITHUB_OUTPUT
 
 
   build:
@@ -55,7 +55,7 @@ jobs:
           distribution: corretto
           java-version: 17
       - name: Build
-        run: 
+        run:
           ./gradlew build
       - name: Copy jar file to artifacts
         uses: actions/upload-artifact@v3
@@ -79,7 +79,7 @@ jobs:
   deploy:
     name: "deploy the application"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - terraform
       - build
       - test
@@ -93,22 +93,21 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: esop-trading-1.0
-
       - name: Copy jar file to ec2 instance
         env:
           SSH_PRIVATE_KEY: ${{secrets.KAJAL_EC2_SSH_KEY}}
           SSH_HOST: ${{ needs.terraform.outputs.host }}
         run: |
-            eval `ssh-agent`
-            echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-            echo "priv key"
-            value=$(lsof -n -i :8080 | grep LISTEN | awk -F ' ' '{print $2}') && sudo kill -9 $value > /dev/null
-#            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "lsof -i tcp:8080 | awk '/8080/{print $2}' | xargs kill"
-            echo "kill pro"
-            scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
-            echo "scp"
-            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
-            echo "sdk"
-            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sdk install java 17.0.6-amzn"
-            echo "java"
-            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar > /dev/null"
+          eval `ssh-agent`
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+          echo "priv key"
+          value=$(lsof -n -i :8080 | grep LISTEN | awk -F ' ' '{print $2}') && sudo kill -9 $value > /dev/null
+          #            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "lsof -i tcp:8080 | awk '/8080/{print $2}' | xargs kill"
+          echo "kill pro"
+          scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
+          echo "scp"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
+          echo "sdk"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sdk install java 17.0.6-amzn"
+          echo "java"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar > /dev/null"
